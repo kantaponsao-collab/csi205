@@ -2,9 +2,17 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 
+export interface UserType {
+  username?: string;
+  name?: string;
+  email?: string;
+  role?: string;
+  [key: string]: any;
+}
+
 interface AuthContextType {
   isLoggedIn: boolean;
-  user: string | null;
+  user: UserType | string | null;
   login: (username: string) => void;
   logout: () => void;
 }
@@ -13,25 +21,32 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [user, setUser] = useState<string | null>(null);
+  const [user, setUser] = useState<UserType | string | null>(null);
 
-  // ดึงสถานะเดิมจาก localStorage เมื่อโหลดหน้าเว็บขึ้นมา
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
       setIsLoggedIn(true);
-      setUser(savedUser);
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch {
+        setUser(savedUser);
+      }
     }
   }, []);
 
-  // บันทึกข้อมูลลง localStorage เมื่อทำการล็อกอิน
   const login = (username: string) => {
     setIsLoggedIn(true);
-    setUser(username);
-    localStorage.setItem("user", username);
+    const userData: UserType = {
+      username,
+      name: username.split("@")[0] || "User",
+      email: username.includes("@") ? username : `${username}@company.com`,
+      role: username.startsWith("admin") ? "admin" : "user",
+    };
+    setUser(userData);
+    localStorage.setItem("user", JSON.stringify(userData));
   };
 
-  // ลบข้อมูลจาก localStorage เมื่อทำการล็อกเอาต์
   const logout = () => {
     setIsLoggedIn(false);
     setUser(null);
