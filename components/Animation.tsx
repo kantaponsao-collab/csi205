@@ -9,10 +9,10 @@ type BallType = "none" | "basketball" | "football" | "volleyball" | "human";
 
 const ballImages: Record<BallType, string> = {
   none: "none",
-  basketball: "url(/animation/basketball.png)",
-  football: "url(/animation/football.png)",
-  volleyball: "url(/animation/volleyball.png)",
-  human: "url(/animation/human.png)",
+  basketball: "(/animation/basketball.png)",
+  football: "(/animation/football.png)",
+  volleyball: "(/animation/volleyball.png)",
+  human: "(/animation/human.png)",
 };
 
 const ballOptions: { type: BallType; label: string }[] = [
