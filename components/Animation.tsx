@@ -9,10 +9,10 @@ type BallType = "none" | "basketball" | "football" | "volleyball" | "human";
 
 const ballImages: Record<BallType, string> = {
   none: "none",
-  basketball: "/animation/basketball.png",
-  football: "/animation/football.png",
-  volleyball: "/animation/volleyball.png",
-  human: "/animation/human.png",
+  basketball: "/Animation/basketball.png",
+  football: "/Animation/football.png",
+  volleyball: "/Animation/volleyball.png",
+  human: "/Animation/human.png",
 };
 
 const ballOptions: { type: BallType; label: string }[] = [
@@ -54,13 +54,21 @@ export default function Animation({ ballRadius }: AnimationProps) {
   });
 
   // ตั้งตำแหน่งเริ่มต้น / เมื่อขนาดบอลเปลี่ยน
-  useEffect(() => {
-    if (ballRef.current) {
-      ballRef.current.style.left = `${posRef.current.x}px`;
-      ballRef.current.style.top = `${posRef.current.y}px`;
-      ballRef.current.style.transform = `rotate(${rotationRef.current}deg)`;
+// ตั้งตำแหน่งเริ่มต้น และอัปเดตรูปภาพลูกบอล
+useEffect(() => {
+  if (ballRef.current) {
+    ballRef.current.style.left = `${posRef.current.x}px`;
+    ballRef.current.style.top = `${posRef.current.y}px`;
+    
+    if (ballType !== "none" && ballImages[ballType]) {
+      ballRef.current.style.backgroundImage = ballImages[ballType];
+      ballRef.current.style.backgroundSize = "cover";
+      ballRef.current.style.backgroundPosition = "center";
+    } else {
+      ballRef.current.style.backgroundImage = "none";
     }
-  }, [ballSize]);
+  }
+}); // <-- เอา [ballType] ออก ให้ทำงานทุกครั้งที่มีการ re-render
 
   // loop animation
   useEffect(() => {
